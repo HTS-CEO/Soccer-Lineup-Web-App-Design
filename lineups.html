@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Lineups | SoccerLineup Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --secondary: #1b5e20;
+            --accent: #ffc107;
+            --light: #f5f5f5;
+            --dark: #212121;
+            --text: #333;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            bottom: -5px;
+            left: 0;
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .main-content {
+            margin-top: 100px;
+            padding-bottom: 50px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: var(--dark);
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
+        }
+        
+        .btn-sm {
+            padding: 8px 20px;
+            font-size: 0.9rem;
+        }
+        
+        .search-filter {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            background-color: #f9f9f9;
+            transition: var(--transition);
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: white;
+        }
+        
+        .search-box {
+            position: relative;
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+        
+        .sort-options {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sort-options select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            background-color: #f9f9f9;
+        }
+        
+        .lineups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        .lineup-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .lineup-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .lineup-preview {
+            height: 200px;
+            background-color: #2e7d32;
+            background-image: linear-gradient(transparent 98%, white 2%),
+                              linear-gradient(90deg, transparent 98%, white 2%),
+                              radial-gradient(circle at 50% 50%, transparent 0%, transparent 69%, white 70%, white 72%, transparent 73%);
+            background-size: 8.33% 11.11%, 8.33% 11.11%, 100% 100%;
+            background-position: center;
+            position: relative;
+        }
+        
+        .lineup-player {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: white;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .lineup-content {
+            padding: 20px;
+        }
+        
+        .lineup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .lineup-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .lineup-formation {
+            background-color: var(--accent);
+            color: var(--dark);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .lineup-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .lineup-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .author-avatar {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .lineup-stats {
+            display: flex;
+            gap: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .stat-item i {
+            color: var(--primary);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            gap: 10px;
+        }
+        
+        .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            background-color: white;
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .page-link:hover, .page-link.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links li {
+                margin: 10px 0;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-box {
+                min-width: 100%;
+            }
+            
+            .lineups-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .lineup-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .lineup-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .lineup-stats {
+                justify-content: space-between;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <img src="https://via.placeholder.com/40x40" alt="SoccerLineup Pro Logo">
+                    <span>SoccerLineup Pro</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="generator.html">Lineup Generator</a></li>
+                    <li><a href="lineups.html">Global Lineups</a></li>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+                <div class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Global Lineups</h1>
+                <button class="btn btn-primary">Create New Lineup</button>
+            </div>
+            
+            <div class="search-filter">
+                <div class="filter-row">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search lineups...">
+                    </div>
+                    <div class="sort-options">
+                        <span>Sort by:</span>
+                        <select>
+                            <option value="popular">Most Popular</option>
+                            <option value="recent">Most Recent</option>
+                            <option value="likes">Most Likes</option>
+                            <option value="comments">Most Comments</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <h3>Formation</h3>
+                        <select class="filter-select">
+                            <option value="">All Formations</option>
+                            <option value="4-4-2">4-4-2</option>
+                            <option value="4-3-3">4-3-3</option>
+                            <option value="3-5-2">3-5-2</option>
+                            <option value="4-2-3-1">4-2-3-1</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <h3>Team</h3>
+                        <select class="filter-select">
+                            <option value="">All Teams</option>
+                            <option value="club">Club Teams</option>
+                            <option value="national">National Teams</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <h3>Date</h3>
+                        <select class="filter-select">
+                            <option value="">Any Time</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="year">This Year</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lineups-grid">
+                <div class="lineup-card fade-in">
+                    <div class="lineup-preview">
+                        <div class="lineup-player" style="top: 10%; left: 50%; transform: translateX(-50%);">1</div>
+                        <div class="lineup-player" style="top: 30%; left: 20%;">3</div>
+                        <div class="lineup-player" style="top: 30%; left: 35%;">4</div>
+                        <div class="lineup-player" style="top: 30%; left: 65%;">5</div>
+                        <div class="lineup-player" style="top: 30%; left: 80%;">2</div>
+                        <div class="lineup-player" style="top: 50%; left: 15%;">7</div>
+                        <div class="lineup-player" style="top: 50%; left: 30%;">8</div>
+                        <div class="lineup-player" style="top: 50%; left: 70%;">6</div>
+                        <div class="lineup-player" style="top: 50%; left: 85%;">11</div>
+                        <div class="lineup-player" style="top: 70%; left: 40%;">9</div>
+                        <div class="lineup-player" style="top: 70%; left: 60%;">10</div>
+                    </div>
+                    <div class="lineup-content">
+                        <div class="lineup-header">
+                            <h3 class="lineup-title">Barcelona Dream Team</h3>
+                            <span class="lineup-formation">4-3-3</span>
+                        </div>
+                        <div class="lineup-meta">
+                            <span class="lineup-author">
+                                <img src="https://via.placeholder.com/25x25" alt="User" class="author-avatar">
+                                <span>FootballFan92</span>
+                            </span>
+                            <span>2 days ago</span>
+                        </div>
+                        <div class="lineup-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-heart"></i>
+                                <span>248</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-comment"></i>
+                                <span>42</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-eye"></i>
+                                <span>1.2K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lineup-card fade-in">
+                    <div class="lineup-preview">
+                        <div class="lineup-player" style="top: 10%; left: 50%; transform: translateX(-50%);">1</div>
+                        <div class="lineup-player" style="top: 30%; left: 30%;">5</div>
+                        <div class="lineup-player" style="top: 30%; left: 50%;">4</div>
+                        <div class="lineup-player" style="top: 30%; left: 70%;">2</div>
+                        <div class="lineup-player" style="top: 50%; left: 15%;">3</div>
+                        <div class="lineup-player" style="top: 50%; left: 30%;">6</div>
+                        <div class="lineup-player" style="top: 50%; left: 50%;">8</div>
+                        <div class="lineup-player" style="top: 50%; left: 70%;">10</div>
+                        <div class="lineup-player" style="top: 50%; left: 85%;">7</div>
+                        <div class="lineup-player" style="top: 70%; left: 40%;">9</div>
+                        <div class="lineup-player" style="top: 70%; left: 60%;">11</div>
+                    </div>
+                    <div class="lineup-content">
+                        <div class="lineup-header">
+                            <h3 class="lineup-title">France National Team 2023</h3>
+                            <span class="lineup-formation">3-4-1-2</span>
+                        </div>
+                        <div class="lineup-meta">
+                            <span class="lineup-author">
+                                <img src="https://via.placeholder.com/25x25" alt="User" class="author-avatar">
+                                <span>TacticalMaster</span>
+                            </span>
+                            <span>1 week ago</span>
+                        </div>
+                        <div class="lineup-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-heart"></i>
+                                <span>189</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-comment"></i>
+                                <span>31</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-eye"></i>
+                                <span>876</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lineup-card fade-in">
+                    <div class="lineup-preview">
+                        <div class="lineup-player" style="top: 10%; left: 50%; transform: translateX(-50%);">1</div>
+                        <div class="lineup-player" style="top: 30%; left: 20%;">3</div>
+                        <div class="lineup-player" style="top: 30%; left: 35%;">5</div>
+                        <div class="lineup-player" style="top: 30%; left: 65%;">6</div>
+                        <div class="lineup-player" style="top: 30%; left: 80%;">2</div>
+                        <div class="lineup-player" style="top: 50%; left: 30%;">8</div>
+                        <div class="lineup-player" style="top: 50%; left: 50%;">10</div>
+                        <div class="lineup-player" style="top: 50%; left: 70%;">7</div>
+                        <div class="lineup-player" style="top: 70%; left: 30%;">11</div>
+                        <div class="lineup-player" style="top: 70%; left: 50%;">9</div>
+                        <div class="lineup-player" style="top: 70%; left: 70%;">10</div>
+                    </div>
+                    <div class="lineup-content">
+                        <div class="lineup-header">
+                            <h3 class="lineup-title">Liverpool Best XI</h3>
+                            <span class="lineup-formation">4-3-3</span>
+                        </div>
+                        <div class="lineup-meta">
+                            <span class="lineup-author">
+                                <img src="https://via.placeholder.com/25x25" alt="User" class="author-avatar">
+                                <span>KopKing</span>
+                            </span>
+                            <span>3 days ago</span>
+                        </div>
+                        <div class="lineup-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-heart"></i>
+                                <span>156</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-comment"></i>
+                                <span>28</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-eye"></i>
+                                <span>754</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lineup-card fade-in">
+                    <div class="lineup-preview">
+                        <div class="lineup-player" style="top: 10%; left: 50%; transform: translateX(-50%);">1</div>
+                        <div class="lineup-player" style="top: 30%; left: 30%;">4</div>
+                        <div class="lineup-player" style="top: 30%; left: 50%;">5</div>
+                        <div class="lineup-player" style="top: 30%; left: 70%;">2</div>
+                        <div class="lineup-player" style="top: 50%; left: 15%;">3</div>
+                        <div class="lineup-player" style="top: 50%; left: 30%;">6</div>
+                        <div class="lineup-player" style="top: 50%; left: 50%;">8</div>
+                        <div class="lineup-player" style="top: 50%; left: 70%;">10</div>
+                        <div class="lineup-player" style="top: 50%; left: 85%;">7</div>
+                        <div class="lineup-player" style="top: 70%; left: 40%;">9</div>
+                        <div class="lineup-player" style="top: 70%; left: 60%;">11</div>
+                    </div>
+                    <div class="lineup-content">
+                        <div class="lineup-header">
+                            <h3 class="lineup-title">Brazil World Cup 2022</h3>
+                            <span class="lineup-formation">3-5-2</span>
+                        </div>
+                        <div class="lineup-meta">
+                            <span class="lineup-author">
+                                <img src="https://via.placeholder.com/25x25" alt="User" class="author-avatar">
+                                <span>SambaStyle</span>
+                            </span>
+                            <span>2 weeks ago</span>
+                        </div>
+                        <div class="lineup-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-heart"></i>
+                                <span>321</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-comment"></i>
+                                <span>56</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-eye"></i>
+                                <span>1.5K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lineup-card fade-in">
+                    <div class="lineup-preview">
+                        <div class="lineup-player" style="top: 10%; left: 50%; transform: translateX(-50%);">1</div>
+                        <div class="lineup-player" style="top: 30%; left: 20%;">3</div>
+                        <div class="lineup-player" style="top: 30%; left: 35%;">4</div>
+                        <div class="lineup-player" style="top: 30%; left: 65%;">5</div>
+                        <div class="lineup-player" style="top: 30%; left: 80%;">2</div>
+                        <div class="lineup-player" style="top: 50%; left: 30%;">8</div>
+                        <div class="lineup-player" style="top: 50%; left: 50%;">6</div>
+                        <div class="lineup-player" style="top: 50%; left: 70%;">10</div>
+                        <div class="lineup-player" style="top: 70%; left: 20%;">7</div>
+                        <div class="lineup-player" style="top: 70%; left: 50%;">9</div>
+                        <div class="lineup-player" style="top: 70%; left: 80%;">11</div>
+                    </div>
+                    <div class="lineup-content">
+                        <div class="lineup-header">
+                            <h3 class="lineup-title">Manchester City Tactical</h3>
+                            <span class="lineup-formation">4-3-3</span>
+                        </div>
+                        <div class="lineup-meta">
+                            <span class="lineup-author">
+                                <img src="https://via.placeholder.com/25x25" alt="User" class="author-avatar">
+                                <span>PepGuardiolaFan</span>
+                            </span>
+                            <span>5 days ago</span>
+                        </div>
+                        <div class="lineup-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-heart"></i>
+                                <span>142</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-comment"></i>
+                                <span>19</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-eye"></i>
+                                <span>689</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lineup-card fade-in">
+                    <div class="lineup-preview">
+                        <div class="lineup-player" style="top: 10%; left: 50%; transform: translateX(-50%);">1</div>
+                        <div class="lineup-player" style="top: 30%; left: 20%;">3</div>
+                        <div class="lineup-player" style="top: 30%; left: 35%;">4</div>
+                        <div class="lineup-player" style="top: 30%; left: 65%;">5</div>
+                        <div class="lineup-player" style="top: 30%; left: 80%;">2</div>
+                        <div class="lineup-player" style="top: 50%; left: 15%;">7</div>
+                        <div class="lineup-player" style="top: 50%; left: 30%;">8</div>
+                        <div class="lineup-player" style="top: 50%; left: 50%;">10</div>
+                        <div class="lineup-player" style="top: 50%; left: 70%;">6</div>
+                        <div class="lineup-player" style="top: 50%; left: 85%;">11</div>
+                        <div class="lineup-player" style="top: 70%; left: 50%;">9</div>
+                    </div>
+                    <div class="lineup-content">
+                        <div class="lineup-header">
+                            <h3 class="lineup-title">Classic AC Milan</h3>
+                            <span class="lineup-formation">4-4-1-1</span>
+                        </div>
+                        <div class="lineup-meta">
+                            <span class="lineup-author">
+                                <img src="https://via.placeholder.com/25x25" alt="User" class="author-avatar">
+                                <span>CalcioLover</span>
+                            </span>
+                            <span>1 month ago</span>
+                        </div>
+                        <div class="lineup-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-heart"></i>
+                                <span>278</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-comment"></i>
+                                <span>47</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-eye"></i>
+                                <span>1.1K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pagination">
+                <a href="#" class="page-link"><i class="fas fa-chevron-left"></i></a>
+                <a href="#" class="page-link active">1</a>
+                <a href="#" class="page-link">2</a>
+                <a href="#" class="page-link">3</a>
+                <a href="#" class="page-link">4</a>
+                <a href="#" class="page-link">5</a>
+                <a href="#" class="page-link"><i class="fas fa-chevron-right"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    
+    <script>
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+        
+        const lineupCards = document.querySelectorAll('.lineup-card');
+        
+        lineupCards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            
+            card.addEventListener('click', function() {
+                window.location.href = 'lineup-detail.html';
+            });
+        });
+        
+        const filterSelects = document.querySelectorAll('.filter-select');
+        
+        filterSelects.forEach(select => {
+            select.addEventListener('change', function() {
+                lineupCards.forEach(card => {
+                    card.classList.remove('fade-in');
+                    setTimeout(() => {
+                        card.classList.add('fade-in');
+                    }, 10);
+                });
+            });
+        });
+        
+        document.querySelector('.search-box input').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            lineupCards.forEach(card => {
+                const title = card.querySelector('.lineup-title').textContent.toLowerCase();
+                const author = card.querySelector('.lineup-author span:last-child').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || author.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    card.classList.remove('fade-in');
+                    setTimeout(() => {
+                        card.classList.add('fade-in');
+                    }, 10);
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
